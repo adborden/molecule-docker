@@ -1,0 +1,25 @@
+name: Build and publish
+
+on:
+  push
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        release_name:
+          - focal
+          - bionic
+          - xenial
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build docker image
+      run: docker build . --build-arg release_name=${{ matrix.release_name }} --tag adborden/molecule-ubuntu:${{ matrix.release_name }}
+    - name: Publish docker image
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: |
+        echo '${{ secrets.DOCKER_PASSWORD }}' | docker login --username '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+        docker push adborden/molecule-ubuntu:${{ matrix.release_name }}
