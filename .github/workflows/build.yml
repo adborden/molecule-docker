@@ -17,7 +17,7 @@ jobs:
           - xenial
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Build docker image
       run: docker build . --build-arg release_name=${{ matrix.release_name }} --tag adborden/molecule-ubuntu:${{ matrix.release_name }}
     - name: Publish docker image
